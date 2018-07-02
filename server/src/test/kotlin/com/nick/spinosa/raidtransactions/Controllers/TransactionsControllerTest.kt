@@ -1,35 +1,110 @@
-package com.nick.spinosa.raidtransactions.api.v1.transactions
+package com.nick.spinosa.raidtransactions.Controllers
 
+import com.nick.spinosa.raidtransactions.entities.*
+import com.nick.spinosa.raidtransactions.typeRef
+import org.junit.Assert.*
+import org.junit.Test
+import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Controller
-import com.nick.spinosa.raidtransactions.daos.TransactionDao
-import com.nick.spinosa.raidtransactions.entities.Transaction
-import org.springframework.web.bind.annotation.*
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.test.web.client.getForEntity
+import org.springframework.boot.test.web.client.postForEntity
+import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
+import org.springframework.http.RequestEntity
+import org.springframework.test.context.junit4.SpringRunner
+import java.net.URI
+import java.sql.Timestamp
+import java.util.*
 
-@RestController
-@RequestMapping("/api/v1/transactions")
-class TransactionsController() {
+@RunWith(SpringRunner::class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class TransactionsControllerTest {
 
     @Autowired
-    val transactionDao: TransactionDao? = null
+    lateinit var testRestTemplate: TestRestTemplate
 
-    @GetMapping("/{id}")
-    fun read(id: Long) {
-        transactionDao!!.findById(id)
+    @Test
+    fun testCreate() {
+        val transaction1 = setUpTransaction("TransactionsCreate")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction1, Transaction::class)
+
+        val transactions = testRestTemplate.exchange(RequestEntity<List<Transaction>>(HttpMethod.GET, URI("/api/v1/transactions")), typeRef<List<Transaction>>())
+        assertNotNull(transactions)
+        assertEquals(transactions.statusCode, HttpStatus.OK)
+        assertTrue(transactions.body!!.map(Transaction::raid).map(Raid::raidLeader).map(Raider::name).contains(transaction1.raid.raidLeader.name))
     }
 
-    @PostMapping()
-    fun createOrUpdate(transaction: Transaction) {
-        transactionDao!!.save(transaction)
+    @Test
+    fun testRead() {
+        val transaction1 = setUpTransaction("TransactionsRead")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction1, Transaction::class)
+
+        val transactions = testRestTemplate.exchange(RequestEntity<List<Transaction>>(HttpMethod.GET, URI("/api/v1/transactions")), typeRef<List<Transaction>>())
+        assertNotNull(transactions)
+
+        val transaction1Id = transactions.body!!.filter { transaction -> transaction.raid.raidLeader.name == transaction1.raid.raidLeader.name }.first().id
+        val transaction = testRestTemplate.getForEntity<Transaction>("/api/v1/transactions/$transaction1Id")
+        assertNotNull(transaction)
+        assertEquals(transactions.statusCode, HttpStatus.OK)
+        assertTrue(transaction.body!!.raid.raidLeader.name == transaction1.raid.raidLeader.name)
     }
 
-    @DeleteMapping("/{id}")
-    fun delete(id: Long) {
-        transactionDao!!.deleteById(id)
+    @Test
+    fun testDelete() {
+        val transaction1 = setUpTransaction("TransactionsDelete")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction1, Transaction::class)
+
+        var transactions = testRestTemplate.exchange(RequestEntity<List<Transaction>>(HttpMethod.GET, URI("/api/v1/transactions")), typeRef<List<Transaction>>())
+        assertNotNull(transactions.body)
+
+        val transaction1Id = transactions.body!!.filter { transaction -> transaction.raid.raidLeader.name == transaction1.raid.raidLeader.name }.first().id
+        testRestTemplate.delete("/api/v1/transactions/$transaction1Id")
+        transactions = testRestTemplate.exchange(RequestEntity<List<Transaction>>(HttpMethod.GET, URI("/api/v1/transactions")), typeRef<List<Transaction>>())
+        assertFalse(transactions.body!!.map(Transaction::raid).map(Raid::raidLeader).map(Raider::name).contains(transaction1.raid.raidLeader.name))
     }
 
-    @GetMapping()
-    fun getAll() {
-        transactionDao!!.findAll()
+    @Test
+    fun testFindAll() {
+        val transaction1 = setUpTransaction("TransactionsFind1")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction1, Transaction::class)
+
+        val transaction2 = setUpTransaction("TransactionsFind2")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction2, Transaction::class)
+
+        val transactions = testRestTemplate.exchange(RequestEntity<List<Transaction>>(HttpMethod.GET, URI("/api/v1/transactions")), typeRef<List<Transaction>>())
+        assertNotNull(transactions.body)
+        assertTrue(transactions.body!!.map(Transaction::raid).map(Raid::raidLeader).map(Raider::name).contains(transaction1.raid.raidLeader.name)
+                && transactions.body!!.map(Transaction::raid).map(Raid::raidLeader).map(Raider::name).contains(transaction2.raid.raidLeader.name))
+    }
+
+    fun setUpTransaction(name: String): Transaction {
+        val calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("EST"))
+
+        val raider = Raider()
+        raider.name = "testRaider$name"
+
+        val raidLeader = Raider()
+        raidLeader.name = "testRaidLeader$name"
+
+        val raid = Raid()
+        raid.instance = Instance.BWL_10
+        raid.date = Timestamp(calendar.timeInMillis)
+        raid.raidLeader = raidLeader
+
+        val amount = Amount()
+        amount.gold = 50
+        amount.silver = 50
+        amount.copper = 50
+
+        val transaction = Transaction()
+        transaction.raid = raid
+        transaction.raider = raider
+        transaction.cost = amount
+        transaction.reason = Transgression.AFK_NO_WARNING
+        transaction.detail = "testing$name"
+
+        return transaction
     }
 }

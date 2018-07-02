@@ -1,16 +1,39 @@
 package com.nick.spinosa.raidtransactions.api.v1.transactions
 
+import org.springframework.beans.factory.annotation.Autowired
+import com.nick.spinosa.raidtransactions.daos.TransactionDao
 import com.nick.spinosa.raidtransactions.entities.Transaction
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.web.bind.annotation.*
 
-class CreateTransactionsList {
+@RestController
+@RequestMapping("/api/v1/transactions")
+class TransactionsController() {
 
-    fun createTransactionList() {
-        val transactions: MutableList<Transaction> = mutableListOf<Transaction>()
+    val PAGE_SIZE: Int = 10
 
+    @Autowired
+    lateinit var transactionDao: TransactionDao
 
+    @GetMapping("/{id}")
+    fun read(@PathVariable id: Long): Transaction {
+        return transactionDao.findById(id).get()
     }
 
+    @PostMapping()
+    fun createOrUpdate(@RequestBody raider: Transaction) {
+        transactionDao.save(raider)
+    }
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Long) {
+        transactionDao.deleteById(id)
+    }
+
+    @GetMapping()
+    fun getAll(@RequestParam(name = "page", defaultValue = "1") pageNumber: Int): List<Transaction> {
+        return transactionDao.findAll(PageRequest.of(
+                pageNumber - 1, PAGE_SIZE, Sort.Direction.ASC, "raider")).content
+    }
 }

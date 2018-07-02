@@ -16,26 +16,28 @@ enum class Transgression {
 }
 
 @Entity
-data class Amount(
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        val id: Long,
-        val gold: Long,
-        val silver: Long,
-        val copper: Long
-)
+@Table(name="Amounts")
+class Amount {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    var id: Long? = null
+    var gold: Long? = null
+    var silver: Long? = null
+    var copper: Long? = null
+}
 
 @Entity
-data class Transaction(
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        val id: Long,
-        @OneToOne
-        val raid: Raid,
-        @OneToOne
-        val raider: Raider,
-        @OneToOne
-        val cost: Amount,
-        val reason: Transgression,
-        val detail: String?
-)
+@Table(name="Transactions")
+class Transaction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    var id: Long? = null
+    @OneToOne(cascade = [CascadeType.PERSIST])
+    lateinit var raid: Raid
+    @OneToOne(cascade = [CascadeType.PERSIST])
+    lateinit var raider: Raider
+    @OneToOne(cascade = [CascadeType.ALL])
+    lateinit var cost: Amount
+    lateinit var reason: Transgression
+    lateinit var detail: String
+}

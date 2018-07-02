@@ -3,11 +3,12 @@ package com.nick.spinosa.raidtransactions.entities
 import javax.persistence.*
 
 @Entity
-data class Raider (
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        val id: Long,
+@Table(name="Raiders")
+class Raider {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    var id: Long? = null
 
-        @Column(unique = true)
-        var name: String
-)
+    @Column(unique = true)
+    lateinit var name: String
+}

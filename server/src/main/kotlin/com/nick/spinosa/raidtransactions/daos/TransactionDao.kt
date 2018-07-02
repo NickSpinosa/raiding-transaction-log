@@ -1,7 +1,10 @@
 package com.nick.spinosa.raidtransactions.daos
 
 import com.nick.spinosa.raidtransactions.entities.Transaction
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.repository.PagingAndSortingRepository
+import org.springframework.stereotype.Repository
 
-interface TransactionDao: CrudRepository<Transaction, Long> {
+@Repository
+interface TransactionDao: PagingAndSortingRepository<Transaction, Long> {
+
 }

@@ -1,8 +1,10 @@
 package com.nick.spinosa.raidtransactions.daos
 
 import com.nick.spinosa.raidtransactions.entities.Raid
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.repository.PagingAndSortingRepository
+import org.springframework.stereotype.Repository
 
-interface RaidDao: CrudRepository<Raid, Long> {
+@Repository
+interface RaidDao: PagingAndSortingRepository<Raid, Long> {
 
 }
