@@ -16,12 +16,14 @@ import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.RequestEntity
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.junit4.SpringRunner
 import java.net.URI
 import java.sql.Timestamp
 import java.util.*
 
 @RunWith(SpringRunner::class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RaidsControllerTest {
 
