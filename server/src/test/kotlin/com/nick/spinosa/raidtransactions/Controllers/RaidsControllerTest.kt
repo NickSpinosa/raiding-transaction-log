@@ -93,7 +93,46 @@ class RaidsControllerTest {
         val raid3 = setUpRaid("testRaidLeaderRaidsPages3")
         testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid3, Raid::class)
 
-        var raids = testRestTemplate.exchange(RequestEntity<List<Raid>>(HttpMethod.GET, URI("/api/v1/raids?page-size=2")), typeRef<List<Raid>>())
+        val raids = testRestTemplate.exchange(RequestEntity<List<Raid>>(HttpMethod.GET, URI("/api/v1/raids?page-size=2")), typeRef<List<Raid>>())
         assertTrue(raids.body!!.size <= 2)
+    }
+
+    @Test
+    fun testPageDefault() {
+        val raid1 = setUpRaid("testRaidLeaderRaidsPagesDefault1")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid1, Raid::class)
+
+        val raid2 = setUpRaid("testRaidLeaderRaidsPagesDefault2")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid2, Raid::class)
+
+        val raid3 = setUpRaid("testRaidLeaderRaidsPagesDefault3")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid3, Raid::class)
+
+        val raid4 = setUpRaid("testRaidLeaderRaidsPagesDefault4")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid4, Raid::class)
+
+        val raid5 = setUpRaid("testRaidLeaderRaidsPagesDefault5")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid5, Raid::class)
+
+        val raid6 = setUpRaid("testRaidLeaderRaidsPagesDefault6")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid6, Raid::class)
+
+        val raid7 = setUpRaid("testRaidLeaderRaidsPagesDefault7")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid7, Raid::class)
+
+        val raid8 = setUpRaid("testRaidLeaderRaidsPagesDefault8")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid8, Raid::class)
+
+        val raid9 = setUpRaid("testRaidLeaderRaidsPagesDefault9")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid9, Raid::class)
+
+        val raid10 = setUpRaid("testRaidLeaderRaidsPagesDefault10")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid10, Raid::class)
+
+        val raid11 = setUpRaid("testRaidLeaderRaidsPagesDefault11")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid11, Raid::class)
+
+        val raids = testRestTemplate.exchange(RequestEntity<List<Raider>>(HttpMethod.GET, URI("/api/v1/raids")), typeRef<List<Raider>>())
+        assertTrue(raids.body!!.size == 10)
     }
 }

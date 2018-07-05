@@ -16,8 +16,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.RequestEntity
 import org.springframework.test.context.junit4.SpringRunner
 import java.net.URI
-import java.sql.Timestamp
-import java.util.*
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -91,7 +89,46 @@ class TransactionsControllerTest {
         val transaction3 = setUpTransaction("testRaidLeaderTransactionsPages3")
         testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction3, Transaction::class)
 
-        var transactions = testRestTemplate.exchange(RequestEntity<List<Transaction>>(HttpMethod.GET, URI("/api/v1/transactions?page-size=2")), typeRef<List<Transaction>>())
+        val transactions = testRestTemplate.exchange(RequestEntity<List<Transaction>>(HttpMethod.GET, URI("/api/v1/transactions?page-size=2")), typeRef<List<Transaction>>())
         assertTrue(transactions.body!!.size <= 2)
+    }
+
+    @Test
+    fun testPageDefault() {
+        val transaction1 = setUpTransaction("testRaidLeaderTransactionsPagesDefault1")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction1, Transaction::class)
+
+        val transaction2 = setUpTransaction("testRaidLeaderTransactionsPagesDefault2")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction2, Transaction::class)
+
+        val transaction3 = setUpTransaction("testRaidLeaderTransactionsPagesDefault3")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction3, Transaction::class)
+
+        val transaction4 = setUpTransaction("testRaidLeaderTransactionsPagesDefault4")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction4, Transaction::class)
+
+        val transaction5 = setUpTransaction("testRaidLeaderTransactionsPagesDefault5")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction5, Transaction::class)
+
+        val transaction6 = setUpTransaction("testRaidLeaderTransactionsPagesDefault6")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction6, Transaction::class)
+
+        val transaction7 = setUpTransaction("testRaidLeaderTransactionsPagesDefault7")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction7, Transaction::class)
+
+        val transaction8 = setUpTransaction("testRaidLeaderTransactionsPagesDefault8")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction8, Transaction::class)
+
+        val transaction9 = setUpTransaction("testRaidLeaderTransactionsPagesDefault9")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction9, Transaction::class)
+
+        val transaction10 = setUpTransaction("testRaidLeaderTransactionsPagesDefault10")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction10, Transaction::class)
+
+        val transaction11 = setUpTransaction("testRaidLeaderTransactionsPagesDefault11")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction11, Transaction::class)
+
+        val transactions = testRestTemplate.exchange(RequestEntity<List<Transaction>>(HttpMethod.GET, URI("/api/v1/transactions")), typeRef<List<Transaction>>())
+        assertTrue(transactions.body!!.size == 10)
     }
 }

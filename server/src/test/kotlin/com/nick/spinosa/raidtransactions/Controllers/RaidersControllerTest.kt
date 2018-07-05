@@ -92,4 +92,43 @@ class RaidersControllerTest {
         var raiders = testRestTemplate.exchange(RequestEntity<List<Raider>>(HttpMethod.GET, URI("/api/v1/raiders?page-size=2")), typeRef<List<Raider>>())
         assertTrue(raiders.body!!.size <= 2)
     }
+
+    @Test
+    fun testPageDefault() {
+        val raider1 = setUpRaider("testRaidLeaderRaidersPagesDefault1")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider1, Raider::class)
+
+        val raider2 = setUpRaider("testRaidLeaderRaidersPagesDefault2")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider2, Raider::class)
+
+        val raider3 = setUpRaider("testRaidLeaderRaidersPagesDefault3")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider3, Raider::class)
+
+        val raider4 = setUpRaider("testRaidLeaderRaidersPagesDefault4")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider4, Raider::class)
+
+        val raider5 = setUpRaider("testRaidLeaderRaidersPagesDefault5")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider5, Raider::class)
+
+        val raider6 = setUpRaider("testRaidLeaderRaidersPagesDefault6")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider6, Raider::class)
+
+        val raider7 = setUpRaider("testRaidLeaderRaidersPagesDefault7")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider7, Raider::class)
+
+        val raider8 = setUpRaider("testRaidLeaderRaidersPagesDefault8")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider8, Raider::class)
+
+        val raider9 = setUpRaider("testRaidLeaderRaidersPagesDefault9")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider9, Raider::class)
+
+        val raider10 = setUpRaider("testRaidLeaderRaidersPagesDefault10")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider10, Raider::class)
+
+        val raider11 = setUpRaider("testRaidLeaderRaidersPagesDefault11")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider11, Raider::class)
+
+        val raiders = testRestTemplate.exchange(RequestEntity<List<Raider>>(HttpMethod.GET, URI("/api/v1/raiders")), typeRef<List<Raider>>())
+        assertTrue(raiders.body!!.size == 10)
+    }
 }
