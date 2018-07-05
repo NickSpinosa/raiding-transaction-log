@@ -1,0 +1,7 @@
+#IntelliJ
+.idea
+.profile
+*.iml
+
+# elm-package generated files
+elm-stuff

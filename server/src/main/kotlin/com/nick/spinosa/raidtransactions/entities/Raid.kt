@@ -1,5 +1,7 @@
 package com.nick.spinosa.raidtransactions.entities
 
+import org.hibernate.annotations.Cascade
+import org.hibernate.engine.spi.CascadingActions.SAVE_UPDATE
 import java.sql.Timestamp
 import javax.persistence.*
 
@@ -19,12 +21,13 @@ enum class Instance {
 }
 
 @Entity
-data class Raid(
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        val id: Long,
-        val instance: Instance,
-        val date: Timestamp,
-        @OneToOne
-        val raidLeader: Raider
-)
+@Table(name="Raids")
+class Raid {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    var id: Long? = null
+    lateinit var instance: Instance
+    lateinit var date: Timestamp
+    @OneToOne(cascade = [CascadeType.PERSIST])
+    lateinit var raidLeader: Raider
+}
