@@ -1,5 +1,6 @@
 package com.nick.spinosa.raidtransactions.Controllers
 
+import com.nick.spinosa.raidtransactions.Entities.setUpRaider
 import com.nick.spinosa.raidtransactions.entities.Raider
 import com.nick.spinosa.raidtransactions.typeRef
 import org.junit.Assert.*
@@ -71,16 +72,24 @@ class RaidersControllerTest {
         val raider2 = setUpRaider("testRaiderRaidersFind2")
         testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider2, Raider::class)
 
-        var raiders = testRestTemplate.exchange(RequestEntity<List<Raider>>(HttpMethod.GET, URI("/api/v1/raiders")), typeRef<List<Raider>>())
+        val raiders = testRestTemplate.exchange(RequestEntity<List<Raider>>(HttpMethod.GET, URI("/api/v1/raiders")), typeRef<List<Raider>>())
         assertNotNull(raiders.body)
         assertTrue(raiders.body!!.map(Raider::name).contains(raider1.name)
         && raiders.body!!.map(Raider::name).contains(raider2.name))
     }
 
-    fun setUpRaider(name: String): Raider {
-        val raider = Raider()
-        raider.name = name
+    @Test
+    fun testPages() {
+        val raider1 = setUpRaider("testRaiderRaidersPages1")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider1, Raider::class)
 
-        return raider
+        val raider2 = setUpRaider("testRaiderRaidersPages2")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider2, Raider::class)
+
+        val raider3 = setUpRaider("testRaiderRaidersPages3")
+        testRestTemplate.postForEntity<Raider>("/api/v1/raiders", raider3, Raider::class)
+
+        var raiders = testRestTemplate.exchange(RequestEntity<List<Raider>>(HttpMethod.GET, URI("/api/v1/raiders?page-size=2")), typeRef<List<Raider>>())
+        assertTrue(raiders.body!!.size <= 2)
     }
 }

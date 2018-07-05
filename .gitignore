@@ -1,0 +1,8 @@
+#IntelliJ
+.idea
+.profile
+raiding-transaction-log.iml
+raidtransactions.iml
+
+# elm-package generated files
+elm-stuff

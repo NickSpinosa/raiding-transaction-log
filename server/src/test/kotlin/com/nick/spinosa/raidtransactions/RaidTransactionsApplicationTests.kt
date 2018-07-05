@@ -14,10 +14,6 @@ class RaidTransactionsApplicationTests {
 	@Test
 	fun contextLoads() {
 	}
-
-	//CRUD operations for raiders
-
-
 }
 
 inline fun <reified T: Any> typeRef(): ParameterizedTypeReference<T> = object: ParameterizedTypeReference<T>(){}

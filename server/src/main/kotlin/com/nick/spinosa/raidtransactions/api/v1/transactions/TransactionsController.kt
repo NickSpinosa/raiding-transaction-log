@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/v1/transactions")
 class TransactionsController() {
 
-    val PAGE_SIZE: Int = 10
-
     @Autowired
     lateinit var transactionDao: TransactionDao
 
@@ -32,8 +30,8 @@ class TransactionsController() {
     }
 
     @GetMapping()
-    fun getAll(@RequestParam(name = "page", defaultValue = "1") pageNumber: Int): List<Transaction> {
+    fun getAll(@RequestParam(name = "page", defaultValue = "1") pageNumber: Int, @RequestParam(name = "page-size", defaultValue = "10") pageSize: Int): List<Transaction> {
         return transactionDao.findAll(PageRequest.of(
-                pageNumber - 1, PAGE_SIZE, Sort.Direction.ASC, "raider")).content
+                pageNumber - 1, pageSize, Sort.Direction.ASC, "raider")).content
     }
 }

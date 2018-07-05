@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/v1/raiders")
 class RaidersController() {
-
-    val PAGE_SIZE: Int = 10
-
     @Autowired
     lateinit var raiderDao: RaiderDao
 
@@ -32,9 +29,9 @@ class RaidersController() {
     }
 
     @GetMapping()
-    fun getAll(@RequestParam(name = "page", defaultValue = "1") pageNumber: Int): List<Raider> {
+    fun getAll(@RequestParam(name = "page", defaultValue = "1") pageNumber: Int, @RequestParam(name = "page-size", defaultValue = "10") pageSize: Int): List<Raider> {
 
         return raiderDao.findAll(PageRequest.of(
-                pageNumber - 1, PAGE_SIZE, Sort.Direction.ASC, "name")).content
+                pageNumber - 1, pageSize, Sort.Direction.ASC, "name")).content
     }
 }

@@ -1,5 +1,6 @@
 package com.nick.spinosa.raidtransactions.Controllers
 
+import com.nick.spinosa.raidtransactions.Entities.setUpRaid
 import com.nick.spinosa.raidtransactions.entities.Instance
 import com.nick.spinosa.raidtransactions.entities.Raid
 import com.nick.spinosa.raidtransactions.entities.Raider
@@ -81,17 +82,18 @@ class RaidsControllerTest {
                 && raids.body!!.map(Raid::raidLeader).map(Raider::name).contains(raid2.raidLeader.name))
     }
 
-    fun setUpRaid(name: String): Raid {
-        val calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("EST"))
+    @Test
+    fun testPages() {
+        val raid1 = setUpRaid("testRaidLeaderRaidsPages1")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid1, Raid::class)
 
-        val raidLeader = Raider()
-        raidLeader.name = name
+        val raid2 = setUpRaid("testRaidLeaderRaidsPages2")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid2, Raid::class)
 
-        val raid = Raid()
-        raid.instance = Instance.BWL_10
-        raid.date = Timestamp(calendar.timeInMillis)
-        raid.raidLeader = raidLeader
+        val raid3 = setUpRaid("testRaidLeaderRaidsPages3")
+        testRestTemplate.postForEntity<Raid>("/api/v1/raids", raid3, Raid::class)
 
-        return raid
+        var raids = testRestTemplate.exchange(RequestEntity<List<Raid>>(HttpMethod.GET, URI("/api/v1/raids?page-size=2")), typeRef<List<Raid>>())
+        assertTrue(raids.body!!.size <= 2)
     }
 }

@@ -1,5 +1,6 @@
 package com.nick.spinosa.raidtransactions.Controllers
 
+import com.nick.spinosa.raidtransactions.Entities.setUpTransaction
 import com.nick.spinosa.raidtransactions.entities.*
 import com.nick.spinosa.raidtransactions.typeRef
 import org.junit.Assert.*
@@ -79,32 +80,18 @@ class TransactionsControllerTest {
                 && transactions.body!!.map(Transaction::raid).map(Raid::raidLeader).map(Raider::name).contains(transaction2.raid.raidLeader.name))
     }
 
-    fun setUpTransaction(name: String): Transaction {
-        val calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("EST"))
+    @Test
+    fun testPages() {
+        val transaction1 = setUpTransaction("testRaidLeaderTransactionsPages1")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction1, Transaction::class)
 
-        val raider = Raider()
-        raider.name = "testRaider$name"
+        val transaction2 = setUpTransaction("testRaidLeaderTransactionsPages2")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction2, Transaction::class)
 
-        val raidLeader = Raider()
-        raidLeader.name = "testRaidLeader$name"
+        val transaction3 = setUpTransaction("testRaidLeaderTransactionsPages3")
+        testRestTemplate.postForEntity<Transaction>("/api/v1/transactions", transaction3, Transaction::class)
 
-        val raid = Raid()
-        raid.instance = Instance.BWL_10
-        raid.date = Timestamp(calendar.timeInMillis)
-        raid.raidLeader = raidLeader
-
-        val amount = Amount()
-        amount.gold = 50
-        amount.silver = 50
-        amount.copper = 50
-
-        val transaction = Transaction()
-        transaction.raid = raid
-        transaction.raider = raider
-        transaction.cost = amount
-        transaction.reason = Transgression.AFK_NO_WARNING
-        transaction.detail = "testing$name"
-
-        return transaction
+        var transactions = testRestTemplate.exchange(RequestEntity<List<Transaction>>(HttpMethod.GET, URI("/api/v1/transactions?page-size=2")), typeRef<List<Transaction>>())
+        assertTrue(transactions.body!!.size <= 2)
     }
 }
