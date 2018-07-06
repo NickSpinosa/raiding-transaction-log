@@ -1,4 +1,4 @@
-module View.TransactionList exposing (..)
+module View.TransactionList exposing (transactionTable)
 
 import Model.DomainTypes exposing (Transaction, Raider, Raid, Transgression, Amount, Instance)
 import Model.ModelFuncs exposing (transgressionString, instanceString)
