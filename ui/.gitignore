@@ -1,8 +1,6 @@
 # Distribution
 build/
-
-# elm-package generated files
-elm-stuff
+/target/
 
 # elm-repl generated files
 repl-temp-*
@@ -12,3 +10,6 @@ node_modules
 
 # Desktop Services Store on macOS
 .DS_Store
+
+#IntelliJ
+*.iml
