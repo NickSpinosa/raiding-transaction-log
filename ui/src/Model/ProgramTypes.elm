@@ -1,7 +1,7 @@
 module Model.ProgramTypes exposing (..)
 
 import Http
-import Model.DomainTypes exposing(Transaction)
+import Model.DomainTypes exposing(Transaction, Raider)
 
 type alias Transactions = List Transaction
 
@@ -12,3 +12,4 @@ type alias Model =
 type Msg
     = GetTransactions
     | NewTransactions (Result Http.Error Transactions)
+    | NewRaider (Result Http.Error Raider)
