@@ -8,6 +8,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.test.context.junit4.SpringRunner
 import java.sql.Timestamp
 import java.util.*
@@ -61,32 +63,44 @@ class TransactionDaoTest {
                 && result.map(Transaction::detail).contains(transaction2.detail))
     }
 
-    fun setUpTransaction(name: String): Transaction {
+    @Test
+    fun testRaiderFilter() {
+        val transaction1 = setUpTransaction("1")
+        val savet1 = transactionDao.save(transaction1)
+
+        val raider = setUpRaider("testRaiderFilter")
+
+        val raid = Raid()
         val calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("EST"))
-
-        var raider = Raider()
-        raider.name = "testRaider$name"
-
-        var raidLeader = Raider()
-        raidLeader.name = "testRaidLeader$name"
-
-        var raid = Raid()
-        raid.instance = Instance.BWL_10
+        val raidLeader = setUpRaider("testRaidLeaderFilter")
+        raid.instance = Instance.MC_10
         raid.date = Timestamp(calendar.timeInMillis)
         raid.raidLeader = raidLeader
 
-        var amount = Amount()
+        val amount = Amount()
         amount.gold = 50
         amount.silver = 50
         amount.copper = 50
 
-        var transaction = Transaction()
-        transaction.raid = raid
-        transaction.raider = raider
-        transaction.cost = amount
-        transaction.reason = Transgression.AFK_NO_WARNING
-        transaction.detail = "testing$name"
+        val transaction2 = Transaction()
+        transaction2.raid = raid
+        transaction2.raider = raider
+        transaction2.cost = amount
+        transaction2.reason = Transgression.FAILED_LEARNED_MECHANIC
+        transaction2.detail = "testingfilters"
+        val savet2 = transactionDao.save(transaction2)
 
-        return transaction
+        val transaction3 = setUpTransaction("2")
+        val savet3 = transactionDao.save(transaction3)
+
+        val pageSize = 1
+        val pageNum = 1
+
+        val result = transactionDao.findAllById(null, Instance.BWL_10, null,
+                null, null, null, null,
+                PageRequest.of(pageNum, pageSize, Sort.Direction.ASC, "raider"))
+        assertTrue(result.map(Transaction::raid).map(Raid::instance).contains(savet1.raid.instance) &&
+                !result.map(Transaction::raid).map(Raid::instance).contains(savet2.raid.instance))
+        assertTrue(result.size == 1)
     }
 }
