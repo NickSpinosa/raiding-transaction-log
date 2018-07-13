@@ -45,10 +45,8 @@ class TransactionsController() {
                @RequestParam(name = "silver", defaultValue = "null") silver: Long?,
                @RequestParam(name = "copper", defaultValue = "null") copper: Long?): List<Transaction> {
 
-        return transactionDao.findAllById(raiderId, instance, transgression, date, gold, silver, copper,
-                PageRequest.of(pageNumber - 1, pageSize, Sort.Direction.ASC, "raider"))
-
-        //return transactionDao.findAll(PageRequest.of(
-                //pageNumber - 1, pageSize, Sort.Direction.ASC, "raider")).content
+        return transactionDao.findAll(PageRequest.of(pageNumber - 1, pageSize, Sort.Direction.ASC, "raider")).content
+        //return transactionDao.findAllById(raiderId, instance, transgression, date, gold, silver, copper,
+        //        PageRequest.of(pageNumber - 1, pageSize, Sort.Direction.ASC, "raider")).content
     }
 }

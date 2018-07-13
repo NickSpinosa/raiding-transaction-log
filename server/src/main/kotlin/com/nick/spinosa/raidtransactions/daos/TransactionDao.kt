@@ -34,5 +34,5 @@ interface TransactionDao: PagingAndSortingRepository<Transaction, Long> {
                     @Param("gold") gold: Long?,
                     @Param("silver") silver: Long?,
                     @Param("copper") copper: Long?,
-                    pageable: Pageable): List<Transaction>
+                    pageable: Pageable): Page<Transaction>
 }
