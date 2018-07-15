@@ -1,7 +1,5 @@
 package com.nick.spinosa.raidtransactions.entities
 
-import org.hibernate.annotations.Cascade
-import org.hibernate.engine.spi.CascadingActions.SAVE_UPDATE
 import java.sql.Timestamp
 import javax.persistence.*
 
