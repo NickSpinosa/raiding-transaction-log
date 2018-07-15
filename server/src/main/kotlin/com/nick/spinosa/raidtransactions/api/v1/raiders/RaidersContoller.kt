@@ -30,7 +30,6 @@ class RaidersController() {
 
     @GetMapping()
     fun getAll(@RequestParam(name = "page", defaultValue = "1") pageNumber: Int, @RequestParam(name = "page-size", defaultValue = "10") pageSize: Int): List<Raider> {
-
         return raiderDao.findAll(PageRequest.of(
                 pageNumber - 1, pageSize, Sort.Direction.ASC, "name")).content
     }

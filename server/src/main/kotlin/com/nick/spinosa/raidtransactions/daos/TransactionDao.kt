@@ -1,8 +1,6 @@
 package com.nick.spinosa.raidtransactions.daos
 
-import com.nick.spinosa.raidtransactions.entities.Instance
-import com.nick.spinosa.raidtransactions.entities.Transaction
-import com.nick.spinosa.raidtransactions.entities.Transgression
+import com.nick.spinosa.raidtransactions.entities.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.Query
@@ -30,5 +28,4 @@ interface TransactionDao: PagingAndSortingRepository<Transaction, Long> {
                     @Param("silver") silver: Long?,
                     @Param("copper") copper: Long?,
                     pageable: Pageable): Page<Transaction>
-
 }
