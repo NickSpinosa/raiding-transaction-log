@@ -1,49 +1,38 @@
 module Main exposing (..)
 
 import Html exposing (Html, text, div, h1, img)
-import Html.Attributes exposing (src)
-
+import Platform.Cmd as Cmd
+import View.TransactionList exposing(transactionTable)
+import Model.ProgramTypes exposing(..)
+import Api.Api exposing (getTransactions)
 
 ---- MODEL ----
 
-
-type alias Model =
-    {}
-
-
 init : ( Model, Cmd Msg )
 init =
-    ( {}, Cmd.none )
-
+    ( { transactions = []}, getTransactions ())
 
 
 ---- UPDATE ----
 
-
-type Msg
-    = NoOp
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
-
+    case msg of
+        GetTransactions -> ( model, getTransactions () )
+        NewTransactions (Ok trans) -> 
+            ( { model | transactions = trans}, Cmd.none )
+        NewTransactions (Err _) ->
+            (model, Cmd.none)
 
 
 ---- VIEW ----
 
-
 view : Model -> Html Msg
 view model =
-    div []
-        [ img [ src "/logo.svg" ] []
-        , h1 [] [ text "Your Elm App is working!" ]
-        ]
-
+    transactionTable model.transactions
 
 
 ---- PROGRAM ----
-
 
 main : Program Never Model Msg
 main =
