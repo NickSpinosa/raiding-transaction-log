@@ -133,4 +133,6 @@ class TransactionsControllerTest {
         val transactions = testRestTemplate.exchange(RequestEntity<List<Transaction>>(HttpMethod.GET, URI("/api/v1/transactions")), typeRef<List<Transaction>>())
         assertTrue(transactions.body!!.size == 10)
     }
+
+
 }
